@@ -3,8 +3,8 @@ package auth
 import (
 	"time"
 
-	wtf "github.com/bla005/auth/models"
 	"github.com/gofrs/uuid"
+	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -19,13 +19,13 @@ type User struct {
 	CreatedAt   time.Time `json:"created_at"`
 }
 
-func (auth *Auth) NewUser() (*User, error) {
-	userId, err := uuid.NewV4()
+func NewUser() (*User, error) {
+	userID, err := uuid.NewV4()
 	if err != nil {
 		return nil, err
 	}
 	return &User{
-		ID:          userId,
+		ID:          userID,
 		Email:       "",
 		Username:    "",
 		Password:    nil,
@@ -36,12 +36,14 @@ func (auth *Auth) NewUser() (*User, error) {
 	}, nil
 }
 
-func (user *User) GetUsername() string {
-	return user.Username
+func hashPassword(password string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
-func (user *User) GetEmail() string {
-	return user.Email
+
+func checkPassword(passwordHash []byte, password string) error {
+	return bcrypt.CompareHashAndPassword(passwordHash, []byte(password))
 }
+
 func (user *User) SetPassword(password string) error {
 	hashedPassword, err := hashPassword(password)
 	if err != nil {
@@ -50,17 +52,9 @@ func (user *User) SetPassword(password string) error {
 	user.Password = hashedPassword
 	return nil
 }
-func (user *User) SetUsername(username string) {
-	user.Username = username
-}
-func (user *User) SetEmail(email string) {
-	user.Email = email
-}
-func (user *User) CheckPassword(password string) error {
-	return checkPassword(user.Password, password)
-}
+
 func (user *User) ToSessionObject() ([]byte, error) {
-	sessionPb := &wtf.Session{
+	sessionPb := &Session{
 		Id:           "",
 		Email:        user.Email,
 		Username:     user.Username,
