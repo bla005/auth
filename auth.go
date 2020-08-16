@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/bla005/auth/models"
 	"github.com/gofrs/uuid"
 )
 
@@ -32,11 +33,11 @@ type AuthStore interface {
 	DelAuthFail(prefix, userID string) error
 }
 type AuthRepository interface {
-	GetUserByID(ctx context.Context, id uuid.UUID) (*User, error)
-	GetUserByEmail(ctx context.Context, email string) (*User, error)
-	GetUserByUsername(ctx context.Context, username string) (*User, error)
-	CreateUser(ctx context.Context, user *User) (*User, error)
-	CreateUserTx(ctx context.Context, user *User, tx *sql.Tx) (*User, error)
+	GetUserByID(ctx context.Context, id uuid.UUID) (*models.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
+	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
+	CreateUser(ctx context.Context, user *models.User) (*models.User, error)
+	CreateUserTx(ctx context.Context, user *models.User, tx *sql.Tx) (*models.User, error)
 	GetPasswordByID(ctx context.Context, id uuid.UUID) ([]byte, error)
 	UpdatePasswordByID(ctx context.Context, newPassword []byte, id uuid.UUID) error
 	UpdateConfirmedByID(ctx context.Context, id uuid.UUID) (bool, error)
