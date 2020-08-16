@@ -1,5 +1,5 @@
 syntax = "proto3";
-// package models;
+package models;
 option go_package = ".;wtf";
 
 message Session {
