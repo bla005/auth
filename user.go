@@ -3,8 +3,9 @@ package auth
 import (
 	"time"
 
-	"github.com/bla005/auth/wtf"
+	wtf "github.com/bla005/auth/models"
 	"github.com/gofrs/uuid"
+	"google.golang.org/protobuf/proto"
 )
 
 type User struct {
@@ -59,19 +60,15 @@ func (user *User) CheckPassword(password string) error {
 	return checkPassword(user.Password, password)
 }
 func (user *User) ToSessionObject() ([]byte, error) {
-	wtf.Session{}
-	/*
-		sessionPb := &models.Session{
-			Id:           "",
-			Email:        user.Email,
-			Username:     user.Username,
-			IsStaff:      user.IsStaff,
-			IsConfirmed:  user.IsConfirmed,
-			IsActive:     user.IsActive,
-			LastLogin:    0,
-			Subscription: 0,
-		}
-		return proto.Marshal(sessionPb)
-	*/
-	return nil, nil
+	sessionPb := &wtf.Session{
+		Id:           "",
+		Email:        user.Email,
+		Username:     user.Username,
+		IsStaff:      user.IsStaff,
+		IsConfirmed:  user.IsConfirmed,
+		IsActive:     user.IsActive,
+		LastLogin:    0,
+		Subscription: 0,
+	}
+	return proto.Marshal(sessionPb)
 }
