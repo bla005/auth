@@ -2,18 +2,21 @@ package main
 
 import (
 	"os"
-	"time"
 
 	"github.com/spf13/cobra"
 )
 
 func printTimeCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:  "curtime",
+		Use:  "update",
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			now := time.Now()
-			cmd.Println("whatever", now)
+			f, err := os.Create("jet.go")
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+			f.Write([]byte(`hi nigga`))
 			return nil
 		},
 	}
@@ -21,7 +24,7 @@ func printTimeCmd() *cobra.Command {
 
 func main() {
 	cmd := &cobra.Command{
-		Use:          "gifm",
+		Use:          "wtf",
 		Short:        "hello",
 		SilenceUsage: true,
 	}
